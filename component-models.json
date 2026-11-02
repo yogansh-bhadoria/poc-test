@@ -136,6 +136,10 @@
           {
             "name": "Highlight",
             "value": "highlight"
+          },
+          {
+            "name":"Banner Section",
+            "value":"banner-section"
           }
         ]
       }
