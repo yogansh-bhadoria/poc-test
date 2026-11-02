@@ -1,0 +1,122 @@
+.case-study-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.case-study-testimonial {
+  margin-top: 24px;
+}
+
+.case-study-testimonial .testimonial-wrapper {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.case-study-testimonial .testimonial {
+  margin: 0;
+}
+
+.case-study-aside {
+  position: sticky;
+  top: 120px;
+}
+
+.case-study-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.case-study-nav-item {
+  margin-bottom: 18px;
+}
+
+.case-study-nav-link {
+  display: block;
+  color: #555;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.case-study-nav-link:hover {
+  color: #d83b2d;
+}
+
+.case-study-nav-link:focus-visible {
+  outline: 2px solid #d83b2d;
+  outline-offset: 4px;
+}
+
+.case-study-nav-link.active {
+  color: #d83b2d;
+  font-weight: 700;
+}
+
+.case-study-main {
+  min-width: 0;
+}
+
+.case-study-section {
+  margin-bottom: 80px;
+  scroll-margin-top: 120px;
+}
+
+.case-study-heading {
+  margin-bottom: 24px;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.case-study-body p {
+  line-height: 1.7;
+  font-size: 18px;
+}
+
+
+@media (width <= 900px) {  .case-study-layout {
+    display: block;
+  }
+
+  .case-study-aside {
+    position: static;
+    margin-bottom: 32px;
+  }
+
+  .case-study-nav-list {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px; /* Room for scrollbar/shadow */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Reset vertical margin and prevent squishing in horizontal list */
+  .case-study-nav-item {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .case-study-nav-link {
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: #f4f4f4;
+  }
+
+  .case-study-nav-link.active {
+    background: #d83b2d;
+    color: #fff;
+  }
+
+  /* Reduce scroll offset since sidebar is no longer sticky */
+  .case-study-section {
+    scroll-margin-top: 24px;
+  }
+}
