@@ -37,6 +37,10 @@
             {
               "name": "Banner Section" ,
               "value": "banner-section"
+            },
+            {
+              "name": "Center Heading",
+              "value": "center-heading"
             }
           ]
         }
