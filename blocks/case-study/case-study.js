@@ -1,3 +1,5 @@
+import { moveInstrumentation } from '../../scripts/scripts.js'; // NEW
+
 function createId(title, index) {
   const id = title
     .toLowerCase()
@@ -23,64 +25,35 @@ function setActiveLink(nav, sectionId) {
   });
 }
 
-// function removeDuplicateHeading(contentCell, title) {
-//   const firstElement = contentCell.firstElementChild;
-
-//   if (!firstElement) return;
-
-//   const isHeading = /^H[1-6]$/.test(firstElement.tagName);
-
-//   const headingText = firstElement.textContent
-//     .trim()
-//     .replace(/\s+/g, ' ')
-//     .toLowerCase();
-
-//   const titleText = title
-//     .trim()
-//     .replace(/\s+/g, ' ')
-//     .toLowerCase();
-
-//   if (isHeading && headingText === titleText) {
-//     firstElement.remove();
-//   }
-// }
-
 function createContentSection(row, index) {
   const cells = [...row.children];
 
-  if (cells.length < 2) return null;
-
-  const titleCell = cells[0];
-  const contentCell = cells[1];
-  const title = titleCell.textContent.trim();
-
-  if (!title) return null;
+  // CHANGED: don't drop rows that are empty or still being authored
+  const titleCell = cells[0] || null;
+  const contentCell = cells[1] || null;
+  const title = (titleCell ? titleCell.textContent.trim() : '')
+    || `Section ${index + 1}`;
 
   const sectionId = createId(title, index);
-
-  /*
-   * The content cell may already contain the same heading entered in DA.
-   * Remove it before creating the section heading so it does not appear twice.
-   */
-  // removeDuplicateHeading(contentCell, title);
 
   const section = document.createElement('section');
   section.className = 'case-study-section';
   section.id = sectionId;
+  moveInstrumentation(row, section); // NEW: keeps the item selectable in UE
 
   const heading = document.createElement('h2');
   heading.className = 'case-study-heading';
   heading.textContent = title;
+  if (titleCell) moveInstrumentation(titleCell, heading); // NEW
 
   const body = document.createElement('div');
   body.className = 'case-study-body';
 
-  /*
-   * Move all remaining authored content from the table cell
-   * into the new section body.
-   */
-  while (contentCell.firstChild) {
-    body.append(contentCell.firstChild);
+  if (contentCell) {
+    moveInstrumentation(contentCell, body); // NEW: keeps rich text editable in UE
+    while (contentCell.firstChild) {
+      body.append(contentCell.firstChild);
+    }
   }
 
   section.append(heading, body);
@@ -109,11 +82,6 @@ function createNavItem(title, sectionId) {
 
     if (!section) return;
 
-    /*
-     * Calculate the section's absolute position on the page.
-     * Using window.scrollTo() prevents the aside panel from becoming
-     * the element that receives the scrolling.
-     */
     const headerOffset = 100;
 
     const sectionPosition = section.getBoundingClientRect().top
@@ -217,18 +185,12 @@ export default function decorate(block) {
   const sections = [];
 
   rows.forEach((row, index) => {
-    const sectionData = createContentSection(row, index);
-
-    if (!sectionData) return;
-
-    const { section, sectionId, title } = sectionData;
+    const { section, sectionId, title } = createContentSection(row, index); // CHANGED
 
     navList.append(createNavItem(title, sectionId));
     mainContent.append(section);
     sections.push(section);
   });
-
-  if (!sections.length) return;
 
   nav.append(navList);
   aside.append(nav);
