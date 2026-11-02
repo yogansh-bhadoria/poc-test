@@ -38,6 +38,47 @@ function renderCards(pages, ul) {
   });
 }
 
+// NEW: counts the number in a card title up from 0 (e.g. "80%+" → 0%+ … 80%+)
+function animateCount(titleEl) {
+  // Find the text that contains the number, so any <strong>/<a> markup is kept
+  const walker = document.createTreeWalker(titleEl, NodeFilter.SHOW_TEXT);
+  let textNode = walker.nextNode();
+  while (textNode && !/\d/.test(textNode.nodeValue)) textNode = walker.nextNode();
+  if (!textNode) return;
+
+  const original = textNode.nodeValue;
+  const match = original.match(/^(\D*)(\d+(?:\.\d+)?)(.*)$/s);
+  if (!match) return;
+
+  const [, prefix, numberText, suffix] = match;
+  const target = parseFloat(numberText);
+  const decimals = (numberText.split('.')[1] || '').length;
+  const duration = 1500;
+
+  textNode.nodeValue = `${prefix}${(0).toFixed(decimals)}${suffix}`;
+
+  const run = () => {
+    const start = performance.now();
+    const step = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const value = (target * progress).toFixed(decimals);
+      textNode.nodeValue = `${prefix}${value}${suffix}`;
+      if (progress < 1) requestAnimationFrame(step);
+      else textNode.nodeValue = original; // end on the exact authored text
+    };
+    requestAnimationFrame(step);
+  };
+
+  // Start counting only when the card scrolls into view
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      observer.disconnect();
+      run();
+    }
+  }, { threshold: 0.5 });
+  observer.observe(titleEl);
+}
+
 export default async function decorate(block) {
   // Check if this block is set to query mode: | Cards (query) |
   const isQuery = block.classList.contains('query');
@@ -119,4 +160,12 @@ export default async function decorate(block) {
   });
   block.textContent = '';
   block.append(ul);
+    block.append(ul);
+
+  // NEW: start the count-up on each card's title (first line of the card body)
+  ul.querySelectorAll('.cards-card-body').forEach((body) => {
+    const titleEl = body.firstElementChild;
+    if (titleEl) animateCount(titleEl);
+  });
+}
 }
