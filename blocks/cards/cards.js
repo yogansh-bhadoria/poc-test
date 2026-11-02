@@ -160,12 +160,10 @@ export default async function decorate(block) {
   });
   block.textContent = '';
   block.append(ul);
-    block.append(ul);
 
   // NEW: start the count-up on each card's title (first line of the card body)
   ul.querySelectorAll('.cards-card-body').forEach((body) => {
     const titleEl = body.firstElementChild;
     if (titleEl) animateCount(titleEl);
   });
-}
 }
