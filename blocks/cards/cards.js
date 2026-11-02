@@ -1,4 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { moveInstrumentation } from '../../scripts/scripts.js'; // NEW
 
 function renderCards(pages, ul) {
   ul.innerHTML = '';
@@ -99,10 +100,11 @@ export default async function decorate(block) {
     return;
   }
 
-  // --- STANDARD BOILERPLATE BEHAVIOR (For manual cards) ---
+  // --- STANDARD BEHAVIOR (For manual cards) ---
   const ul = document.createElement('ul');
   [...block.children].forEach((row) => {
     const li = document.createElement('li');
+    moveInstrumentation(row, li); // NEW: keeps the card clickable in UE
     while (row.firstElementChild) li.append(row.firstElementChild);
     [...li.children].forEach((div) => {
       if (div.children.length === 1 && div.querySelector('picture')) div.className = 'cards-card-image';
@@ -110,7 +112,11 @@ export default async function decorate(block) {
     });
     ul.append(li);
   });
-  ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
+  ul.querySelectorAll('picture > img').forEach((img) => {
+    const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
+    moveInstrumentation(img, optimizedPic.querySelector('img')); // NEW: keeps the image clickable in UE
+    img.closest('picture').replaceWith(optimizedPic);
+  });
   block.textContent = '';
   block.append(ul);
 }
