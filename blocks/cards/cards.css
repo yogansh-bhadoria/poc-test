@@ -1,27 +1,231 @@
+/* Container spacing & centering */
+.cards-wrapper,
+.cards.block {
+  max-width: 1440px;
+  margin: 64px auto;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+/* 3-column responsive grid (Manual Cards) */
 .cards > ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
 }
 
+/* Individual Card (Manual Cards - pill rounded with coral border) */
 .cards > ul > li {
-  border: 1px solid #dadada;
-  background-color: var(--background-color);
+  background-color: #fff;
+  border: 1px solid #ea624b; /* Distinct LTM coral border */
+  border-radius: 24px;
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 180px;
+  box-sizing: border-box;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.cards > ul > li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgb(234 98 75 / 12%);
+}
+
+/* Hide image container if it has no image */
+.cards .cards-card-image:not(:has(img)) {
+  display: none;
+}
+
+/* Card Body */
 .cards .cards-card-body {
-  margin: 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
-.cards .cards-card-image {
-  line-height: 0;
+.cards .asset-type-dropdown p{
+  font-size: medium;
+  color: #111;
 }
 
-.cards > ul > li img {
+/* Description Text (Manual Cards) */
+.cards .cards-card-body p {
+  margin: 0;
+  color: #111;
+  font-size: 1rem;
+  line-height: 1.45;
+  font-weight: 400;
+  max-width: 280px;
+}
+
+/* Heading fallback if authored as h2 or h3 (Manual Cards) */
+.cards .cards-card-body h2,
+.cards .cards-card-body h3 {
+  margin: 0 0 20px;
+  color: #ea624b;
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.cards.query .cards-card-body p {
+  display: none;
+}
+
+/* Stat Number (When authored as two cells in DA) */
+.cards > ul > li > div:first-child:not(:last-child) p {
+  margin: 0 0 20px;
+  color: #ea624b;
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+/* Stat Number (When authored inside a single cell in DA) */
+.cards > ul > li > div:only-child > p:first-child {
+  margin: 0 0 20px;
+  color: #ea624b;
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.cards.query .cards-card-image a,
+.cards.query .cards-card-image picture,
+.cards.query .cards-card-image img {
+  display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 100%;
   object-fit: cover;
+}
+
+.cards.query .cards-card-body h3 a {
+  color: #fff;
+  text-decoration: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+/* Links inside the stat number */
+.cards > ul > li > div:first-child:not(:last-child) a,
+.cards > ul > li > div:only-child > p:first-child a {
+  color: #ea624b;
+  text-decoration: none;
+}
+
+/* ========================================================
+   QUERY CARDS VARIANT ONLY (.cards.query)
+   Wide, dark-themed cards matching the reference design
+   ======================================================== */
+
+/* 3-column wide grid on desktop */
+.cards.query > ul {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px 24px;
+}
+
+@media (width <= 992px) {
+  .cards.query > ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width <= 600px) {
+  .cards.query > ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual Query Card (dark background, wide landscape aspect ratio) */
+.cards.query > ul > li {
+  background-color: #1a1a1a;
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  min-height: 310px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cards.query > ul > li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgb(0 0 0 / 45%);
+}
+
+/* Top full-bleed image */
+.cards.query .cards-card-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Case Study badge in top-right corner */
+.cards.query .cards-card-tag {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 80%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Query Card Body */
+.cards.query .cards-card-body {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-grow: 1;
+  background-color: #1a1a1a;
+}
+
+/* For cards without image (like Card 1 in reference) */
+.cards.query > ul > li.no-image .cards-card-body,
+.cards.query > ul > li:not(:has(.cards-card-image)) .cards-card-body {
+  padding: 32px 28px;
+}
+
+/* Overriding the 2.75rem coral heading for query cards */
+.cards.query .cards-card-body h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: normal;
+  color: #fff;
+}
+
+.cards.query .cards-card-body h3 a:hover {
+  color: #ea624b;
+}
+
+.cards .asset-type-dropdown {
+  border-radius: 20px;
+  width: 30%;
+  padding: 5px;
+  border: 1px solid #000;
+  margin-bottom:15px;
 }
